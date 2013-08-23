@@ -31,9 +31,39 @@
     Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA 02110-1301 USA
     */
 
-
-
 /** Add guest author without user profile functionality via the following functions */
+
+/**
+ * Post Authors Post Link Shortcode
+ * 
+ * @param array $atts
+ * @return string $authors
+ */
+function be_post_authors_post_link_shortcode( $atts ) {
+ 
+	$atts = shortcode_atts( array( 
+		'between'      => null,
+		'between_last' => null,
+		'before'       => null,
+		'after'        => null
+	), $atts );
+ 
+	$authors = function_exists( 'coauthors_posts_links' ) ? coauthors_posts_links( $atts['between'], $atts['between_last'], $atts['before'], $atts['after'], false ) : $atts['before'] . get_author_posts_url() . $atts['after'];
+	return $authors;
+}
+add_shortcode( 'post_authors_post_link', 'be_post_authors_post_link_shortcode' );
+
+/**
+ * List Authors in Genesis Post Info
+ *
+ * @param string $info
+ * @return string $info
+ */
+function be_post_info( $info ) {
+	$info = '[post_authors_post_link before="by "]';
+	return $info;
+}
+add_filter( 'genesis_post_info', 'be_post_info' );
 
 // Remove Genesis Author Box and load our own
 
